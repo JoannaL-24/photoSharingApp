@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="style.css" rel="stylesheet">
+    <title>Document</title>
+</head>
+<body>
+    <?php
+
+        $servername = "localhost";
+        $username = "root";
+        $password = "Joanna24*";
+        $databaseName = "photosharingapp";
+
+        try {
+            $conn = new PDO("mysql:host=$servername;dbname=$databaseName", $username, $password);
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            echo "
+            <div class=\"cards\">
+                <div class=\"card\">
+                    Connected Successfully
+                </div>
+            ";
+
+            session_start([
+                "name"=>"userLogin"
+            ]);
+            
+
+            $des = addslashes($_POST["des"]);
+            $picture = (file_get_contents($_FILES["picture"]['tmp_name']));
+
+            $stmt = $conn->prepare("INSERT INTO `post` (`userId`, `picture`, `content`) VALUES (:userId, :picture, :content)");
+            $stmt->bindParam(':userId', $_SESSION["id"]);
+            $stmt->bindParam(':picture', $picture);
+            $stmt->bindParam(':content', $des);
+    
+            $stmt-> execute();
+
+            session_start([
+                "name" => "userLogin",
+            ]);
+    
+            $id = $_SESSION["id"];
+            header("Location: mainPage.php?id=$id");
+
+        }catch(PDOException $e) {
+            echo "Connection failed: " . $e->getMessage();
+        }
+    ?>
+</body>
+</html>
