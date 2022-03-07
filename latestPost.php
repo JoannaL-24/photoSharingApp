@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="style.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/78ed85043c.js" crossorigin="anonymous"></script>
     <title>Latest Post</title>
 </head>
 <?php
@@ -47,9 +48,8 @@
                 while($row = $stmt->fetch()){
                     array_push($following, $row["followingUser"]);
                 }
-    
                 if (!empty($following)){
-                    $getUser = $conn-> prepare("SELECT `user`.`userId`, `user`.`name`, `user`.`profilePic`, `post`.`picture`,`post`.`content`, `post`.`postTime` FROM `post`
+                    $getUser = $conn-> prepare("SELECT `user`.`userId`, `user`.`name`, `user`.`profilePic`, `post`.`picture`, `post`.`postId`,`post`.`content`, `post`.`postTime` FROM `post`
                     INNER JOIN `user` ON `post`.`userId`=`user`.`userId` WHERE `post`.`userId` IN (".implode(',', $following). ") ORDER BY `post`.`postTime` DESC");
                     $getUser->execute();
                     while($row = $getUser->fetch()){
@@ -65,8 +65,25 @@
                                 <img class=\"postImg\" src=\"data:image/png;base64,".base64_encode(($row["picture"]))."\"/>
                                 <p>$row[content]</p>
                                 <p>$row[postTime]</p>
-                            </div>
-                        </div>";
+                            </div>";
+                        require("checkLike.php");
+                        if ($hasLike){
+                            echo"
+                            <div class=\"postControl\">
+                                <a href = \"likePost.php?post=$row[postId]&have=$hasLike&list=ture\">
+                                    <i class=\"fa-solid fa-cookie-bite\"></i>
+                                </a>
+                            </div>";
+                        }
+                        else{
+                            echo"
+                            <div class=\"postControl\">
+                                <a href = \"likePost.php?post=$row[postId]&have=$hasLike&list=ture\">
+                                    <i class=\"fa-solid fa-cookie\"></i>
+                                </a>
+                            </div>";
+                        }
+                        echo "</div>";
                     }
                 }
                 else{
