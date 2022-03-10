@@ -34,7 +34,7 @@
                 </div>
                 <div class="fill">
                     <label for ="bio">Bio:</label>
-                    <textarea id="bio" name="bio"></textarea>
+                    <textarea id="bio" name="bio" rows="5" cols="56"></textarea>
                 </div>
                 <div class="fill">
                     <label for ="profilePic">Profile Picture:</label>
