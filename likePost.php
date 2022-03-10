@@ -37,11 +37,14 @@
             $stmt-> execute();
             
         }
-        if ($isList){
+        if ($isList == .1){
             header( "Location: latestPost.php" );
         }
+        else if ($isList == .2){
+            header( "Location: likeList.php" );
+        }
         else{
-            header( "Location: mainPage.php?id=$viewId" );
+            header( "Location: mainPage.php?id=$isList" );
         }
         
         echo "</div>";

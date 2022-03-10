@@ -14,6 +14,7 @@ header{
     align-items: center;
     padding: 15px 5%;
     background-color: #3F4B59;
+    box-shadow: 0 0 30px rgba(0,0,0,0.2);
 }
 .naviLink {
     display: flex;
@@ -68,7 +69,6 @@ header{
     border-color: whitesmoke;
 }
 
-
 body{
     width: 100vw;
     overflow-x: hidden;
@@ -85,6 +85,7 @@ body{
     margin: 0px;
     padding: 0px 0px 60px;
     flex-wrap: wrap;
+    align-items: center
 }
 .cols2 {
     width:100%;
@@ -102,12 +103,13 @@ body{
     box-shadow: none !important;
 }
 .card{
-    width: 500px;
+    height: auto;
+    width: 450px;
     background-color: white;
     border-radius: 5px;
     margin: 60px 30px 0px;
-    padding: 35px 35px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.15);
+    padding: 35px 30px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
 }
 
 .fill{
@@ -156,10 +158,10 @@ img{
     margin-right: 1%;
 }
 .smallProfile img{
-    width: 48px;
-    height: 100%;
+    width: 35px;
+    height: 35px;
     padding: auto;
-    border-radius: 100px;
+    border-radius: 50%;
 }
 .smallProfile a{
     color: black;
@@ -167,7 +169,53 @@ img{
 }
 .smallProfile h4{
     padding-top: 10px;
+    padding-bottom: 15px;
     text-align: center;
+}
+.more{
+    width: 100%;
+    height: 10px;
+    display: flex;
+    justify-content: flex-start;
+    flex-direction:row;
+}
+#profileDetail{
+    opacity: 0;
+    width: 25%;
+    height: fit-content;
+    background-color: white;
+    border-radius: 6px;
+    position: relative;
+    top: -40px;
+    left: 150px;
+    text-align: center;
+    padding: 10px 0px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.25);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transform: translate(-50%,-50%) scale(0.01);
+    transition: transform ease-in-out 0.2s,
+                top ease-in-out 0.2s,
+                left ease-in-out 0.2s,
+                opacity ease-in-out 0.2s;
+}
+.popup{
+    opacity: 1 !important;
+    top: 10px !important;
+    left: 205px !important;
+    transform: translate(-50%,-50%) scale(1) !important;
+}
+.detailLink{
+    width: 100%;
+    font-size: small;
+    text-decoration: none;
+    color: black;
+    padding: 10px;
+}
+.detailLink:hover{
+    background-color: whitesmoke;
 }
 .postContent{
     border-style: solid;
@@ -180,3 +228,70 @@ img{
     max-height: 250px;
     padding-bottom: 2%;
 }
+.postControl{
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+}
+.circleButton{
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+}
+.circleButton:hover{
+    background-color: whitesmoke;
+}
+i{
+    color: rgb(170, 170, 170);
+}
+.fa-solid{
+    color: #e07a5f;
+}
+
+#loader {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 1;
+    width: 80px;
+    height: 80px;
+    margin: -76px 0 0 -76px;
+    /* border: 8px solid #1F2A40; */
+    border-radius: 50%;
+    /* border-top: 8px solid #e07a5f; */
+    -webkit-animation: spin 1s  infinite;
+    animation: spin 1s infinite;
+  }
+  
+  @-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  .cards {
+    position: relative;
+    -webkit-animation: fromButtom 0.9s;
+    animation: fromButtom 0.9s;
+  }
+  
+  @-webkit-keyframes fromButtom {
+    from { bottom:-20px; opacity:0 } 
+    to { bottom:0px; opacity:1 }
+  }
+  
+  @keyframes fromButtom { 
+    from{ bottom:-20px; opacity:0 } 
+    to{ bottom:0; opacity:1 }
+  }

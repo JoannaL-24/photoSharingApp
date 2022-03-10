@@ -24,7 +24,21 @@
     <a class="cta" id="addPost" href="addPost.php"><h4>+</h4></a>
     <a class="cta" href="logOut.php"><h4>Logout</h4></a>
 </header>
-<body>
+<script>
+    function loading() {
+            if (document.readyState != "complete") {
+                document.querySelector("header").style.visibility = "visible";
+                document.querySelector("body").style.visibility = "hidden";
+                document.querySelector("#loader").style.visibility = "visible";
+            } 
+            else {
+                document.querySelector("#loader").style.display = "none";
+                document.querySelector("body").style.visibility = "visible";
+            }
+        };
+</script>
+<div id="loader" class="center"></div>
+<body onload="loading()">
     <?php
         $servername = "localhost";
         $username = "root";
@@ -34,7 +48,7 @@
         try {
             $conn = new PDO("mysql:host=$servername;dbname=$databaseName", $username, $password);
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            echo "<div class=\"cols2\">";
+            echo "<div class=\"cols2 fromButtom\">";
                 echo "<div class=\"cards\">
                         <div class=\"card\"><h3>Following</h3></div>";
                 // echo "<div class=\"card\">
@@ -72,7 +86,7 @@
                             <a href=\"mainPage.php?id=$row[userId]\"><h3>$row[name]</h3></a>
                             <p>$row[bio]</p>
                         </div>
-                        <form method=\"POST\" action=\"followFormhandler.php?list=".true."&have=".true."&id=$row[userId]\">
+                        <form method=\"POST\" action=\"followFormhandler.php?list=",1,"&have=".true."&id=$row[userId]\">
                                 <input type=\"submit\" value=\"Unfollow\" id=\"followBtn\">
                         </form>
                     </div>";
@@ -96,7 +110,6 @@
 
                 while($row = $getUser->fetch()){
                     $viewId = $row["userId"];
-                    include("checkFollow.php");
                     echo "
                     <div class=\"card profile\">
                         <div class=\"profilePic\">
@@ -108,15 +121,8 @@
                             <a href=\"mainPage.php?id=$viewId\"><h3>$row[name]</h3></a>
                             <p>$row[bio]</p>
                         </div>
-                        <form method=\"POST\" action=\"followFormhandler.php?list=".true."&have=".$hasFollow."&id=$row[userId]\">";
-                        if ($hasFollow){
-                            echo "<input type=\"submit\" value=\"Unfollow\" id=\"followBtn\">";
-                        }
-                        else{
-                            echo "<input type=\"submit\" value=\"Follow\" id=\"followBtn\">";
-                        }
-                    
-                    echo"
+                        <form method=\"POST\" action=\"followFormhandler.php?list=2&have=". false."&id=$row[userId]\">
+                            <input type=\"submit\" value=\"Remove\" id=\"followBtn\">
                         </form>
                     </div>";
                 }

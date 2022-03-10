@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="style.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/78ed85043c.js" crossorigin="anonymous"></script>
     <title>Home</title>
 </head>
 <?php
@@ -26,9 +27,38 @@
     <a class="cta" id="addPost" href="addPost.php"><h4>+</h4></a>
     <a class="cta" href="logOut.php"><h4>Logout</h4></a>
 </header>
-<body>
+<script>
+    function loading() {
+        if (document.readyState != "complete") {
+            document.querySelector("header").style.visibility = "visible";
+            document.querySelector("body").style.visibility = "hidden";
+            document.querySelector("#loader").style.visibility = "visible";
+        } 
+        else {
+            document.querySelector("#loader").style.display = "none";
+            document.querySelector("body").style.visibility = "visible";
+        }
+    };
+    var showProfileDetail = false;
+    function profileMore(){
+        if (!showProfileDetail){
+            document.getElementById("profileDetail").classList.add("popup");
+            // document.getElementById("profileDetail").style.visibility = "visible";
+            showProfileDetail = true;
+        }
+        else{
+            
+            document.getElementById("profileDetail").classList.remove("popup");
+            // document.getElementById("profileDetail").style.visibility = "hidden";
+            showProfileDetail = false;
+        }
+        
+    }
+</script>
+<div id="loader" class="center"></div>
+<body onload="loading()">
     <?php   
-        echo "<div class=\"cards\">";
+        echo "<div class=\"cards fromButtom\">";
 
         $servername = "localhost";
         $username = "root";
@@ -51,7 +81,17 @@
                 $bio = $_SESSION["bio"];
                 $profilePic = $_SESSION["profilePic"];
                 echo "
+                
                     <div class=\"card\">
+                        <div class=\"more\" style=\"justify-content: flex-end\">
+                            <div id=\"profileDetail\" class=\"card\">
+                                <a class=\"detailLink\" href=\"likeList.php\">Liked Posts</a>
+                                <a class=\"detailLink\" href=\"changeProfile.php\">Change Profile</a>
+                            </div>
+                            <a id=\"profileMore\" class=\"circleButton\" onclick=\"profileMore()\">
+                                <i class=\"fa-solid fa-ellipsis-vertical\"></i>
+                            </a>
+                        </div>
                         <p>ID: $id</p>
                         <p>Name: $name</p>
                         <p>Email: $email</p>
@@ -59,7 +99,7 @@
                         <p>Profile Picture: </p>
                         <img  src=\"data:image/png;base64,$profilePic\"/>
                         <br>
-                        <a href=\"changeProfile.php\">Change Profile</a>
+                        
                     </div>";
             }
             else{
@@ -76,14 +116,15 @@
                         <p>Bio: $row[bio]</p>
                         <p>Profile Picture: </p>
                         <img  src=\"data:image/png;base64,".base64_encode($row["profilePic"])."\"/>";
+                    require("checkFollow.php");
                     if (!$hasFollow){
-                        echo "<form method=\"POST\" action=\"followFormhandler.php?have=$hasFollow&id=$viewId\">
+                        echo "<form method=\"POST\" action=\"followFormhandler.php?list=0&have=$hasFollow&id=$viewId\">
                             <input type=\"submit\" value=\"Follow\" id=\"followBtn\">
                         </form>
                     </div>";
                     }
                     else{
-                        echo "<form method=\"POST\" action=\"followFormhandler.php?list=".false."&have=$hasFollow&id=$viewId\">
+                        echo "<form method=\"POST\" action=\"followFormhandler.php?list=0&have=$hasFollow&id=$viewId\">
                             <input type=\"submit\" value=\"Unfollow\" id=\"followBtn\">
                         </form>
                     </div>";
@@ -93,7 +134,7 @@
             }
 
 
-            $getPost = $conn-> prepare("SELECT `picture`,`content`,`postTime` FROM `post` WHERE `userId` = ?");
+            $getPost = $conn-> prepare("SELECT `postId`,`picture`,`content`,`postTime` FROM `post` WHERE `userId` = ?");
             $getPost->bindParam(1, $viewId);
             $getPost->execute();
 
@@ -103,7 +144,25 @@
                 <div class=\"card\">
                     <img class=\"postImg\" src=\"data:image/png;base64,".base64_encode(($row["picture"]))."\"/>
                     <p>$row[content]</p>
-                    <p>$row[postTime]</p>
+                    <p>$row[postTime]</p>";
+                    require("checkLike.php");
+                    if ($hasLike){
+                        echo"
+                        <div class=\"postControl\">
+                            <a class=\"circleButton\" href = \"likePost.php?post=$row[postId]&have=$hasLike&list=$viewId\">
+                                <i class=\"fa-solid fa-heart xl\"></i>
+                            </a>
+                        </div>";
+                    }
+                    else{
+                        echo"
+                        <div class=\"postControl\">
+                            <a class=\"circleButton\" href = \"likePost.php?post=$row[postId]&have=$hasLike&list=$viewId\">
+                                <i class=\"fa-regular fa-heart xl\"></i>
+                            </a>
+                        </div>";
+                    }
+                echo "
                 </div>";
             }
             

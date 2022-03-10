@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="style.css" rel="stylesheet">
     <script src="https://kit.fontawesome.com/78ed85043c.js" crossorigin="anonymous"></script>
-    <title>Latest Post</title>
+    <title>Liked Posts</title>
 </head>
 <?php
     session_start([
@@ -18,7 +18,7 @@
 <header>
     <ul class="naviLink">
         <li><a href="mainPage.php?id=<?php echo $id;?>"><h4>My Page</h4></a></li>
-        <li class="active"><a class="active" href="latestPost.php"><h4>Latest Post</h4></a></li>
+        <li><a href="latestPost.php"><h4>Latest Post</h4></a></li>
         <li><a href="following.php"><h4>Following</h4></a></li>
         <li><a href="search.php"><h4>Search</h4></a></li>
     </ul>
@@ -54,46 +54,38 @@
                 //         Connected Successfully
                 //     </div>";
 
-                $stmt = $conn->prepare("SELECT * FROM `following` WHERE follower = ?");
-                $stmt -> bindParam(1, $id);
+                $stmt = $conn->prepare("SELECT * FROM `like` WHERE userId = ?");
+                $stmt -> bindParam(1, $_SESSION["id"]);
                 $stmt->execute();
     
-                $following = array();
+                $likedPosts = array();
                 while($row = $stmt->fetch()){
-                    array_push($following, $row["followingUser"]);
+                    array_push($likedPosts, $row["postId"]);
                 }
-                if (!empty($following)){
-                    $getUser = $conn-> prepare("SELECT `user`.`userId`, `user`.`name`, `user`.`profilePic`, `post`.`picture`, `post`.`postId`,`post`.`content`, `post`.`postTime` FROM `post`
-                    INNER JOIN `user` ON `post`.`userId`=`user`.`userId` WHERE `post`.`userId` IN (".implode(',', $following). ") ORDER BY `post`.`postTime` DESC");
-                    $getUser->execute();
-                    while($row = $getUser->fetch()){
-                        echo "
-                        <div class=\"card\">
-                            <div class=\"smallProfile\">
-                                <a class=\"smallImg\" href=\"mainPage.php?id=$row[userId]\">
-                                    <img  src=\"data:image/png;base64,".base64_encode($row["profilePic"])."\"/>
-                                </a>
-                                <a class=\"smallName\" href=\"mainPage.php?id=$row[userId]\"><h4>$row[name]</h4></a>
-                            </div>
-                            <div class=\"postContent\">
-                                <img class=\"postImg\" src=\"data:image/png;base64,".base64_encode(($row["picture"]))."\"/>
-                                <p>$row[content]</p>
-                                <p>$row[postTime]</p>
-                            </div>";
+                if (!empty($likedPosts)){
+                    $getPost = $conn-> prepare("SELECT `user`.`userId`, `user`.`name`, `user`.`profilePic`, `post`.`picture`, `post`.`postId`,`post`.`content`, `post`.`postTime` FROM `post`
+                    INNER JOIN `user` ON `post`.`userId`=`user`.`userId` WHERE `post`.`postId` IN (".implode(',', $likedPosts). ") ORDER BY `post`.`postTime` DESC");
+                    $getPost->execute();
+                    while($row = $getPost->fetch()){
                         require("checkLike.php");
+                        
                         if ($hasLike){
-                            echo"
+                            echo "
+                            <div class=\"card\">
+                                <div class=\"smallProfile\">
+                                    <a class=\"smallImg\" href=\"mainPage.php?id=$row[userId]\">
+                                        <img  src=\"data:image/png;base64,".base64_encode($row["profilePic"])."\"/>
+                                    </a>
+                                    <a class=\"smallName\" href=\"mainPage.php?id=$row[userId]\"><h4>$row[name]</h4></a>
+                                </div>
+                                <div class=\"postContent\">
+                                    <img class=\"postImg\" src=\"data:image/png;base64,".base64_encode(($row["picture"]))."\"/>
+                                    <p>$row[content]</p>
+                                    <p>$row[postTime]</p>
+                                </div>
                             <div class=\"postControl\">
-                                <a class=\"circleButton\" href = \"likePost.php?post=$row[postId]&have=$hasLike&list=.1\">
+                                <a class=\"circleButton\" href = \"likePost.php?post=$row[postId]&have=$hasLike&list=.2\">
                                     <i class=\"fa-solid fa-heart xl\"></i>
-                                </a>
-                            </div>";
-                        }
-                        else{
-                            echo"
-                            <div class=\"postControl\">
-                                <a class=\"circleButton\" href = \"likePost.php?post=$row[postId]&have=$hasLike&list=.1\">
-                                    <i class=\"fa-regular fa-heart xl\"></i>
                                 </a>
                             </div>";
                         }
@@ -110,6 +102,5 @@
                 echo "Connection failed: " . $e->getMessage();
             }
         ?>
-    </div>
 </body>
 </html>
