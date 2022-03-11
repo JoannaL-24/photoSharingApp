@@ -25,56 +25,42 @@
     <a class="cta" href="logOut.php"><h4>Logout</h4></a>
 </header>
 <body>
-    <?php
-        echo "<div class=\"cards\">";
+<?php
+    echo "<div class=\"cards\">";
 
-        $servername = "localhost";
-        $username = "root";
-        $password = "Joanna24*";
-        $databaseName = "photosharingapp";
-        try {
-            $conn = new PDO("mysql:host=$servername;dbname=$databaseName", $username, $password);
-            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            echo "
-                <div class=\"card\">
-                    Connected Successfully
-                </div>
-            ";
-        }catch(PDOException $e) {
-            echo "Connection failed: " . $e->getMessage();
-        }
-        
-        $searchName = addslashes("%$_POST[searchName]%");
+    require("connectSever.php");
+    
+    $searchName = addslashes("%$_POST[searchName]%");
 
-        $getUser = $conn-> prepare("SELECT `userId`,`name`, `bio`, `profilePic` FROM `user` WHERE `name` like ?");
-        $getUser->bindParam(1, $searchName);
-        $getUser->execute();
+    $getUser = $conn-> prepare("SELECT `userId`,`name`, `bio`, `profilePic` FROM `user` WHERE `name` like ?");
+    $getUser->bindParam(1, $searchName);
+    $getUser->execute();
 
-        $haveMatch = false;
-        while($row = $getUser->fetch()){
-            $haveMatch = true;
-            echo "
-            <div class=\"card profile\">
-                <div class=\"profilePic\">
-                    <a href=\"mainPage.php?id=$row[userId]\">
-                        <img  src=\"data:image/png;base64,".base64_encode($row["profilePic"])."\"/>
-                    </a>
-                        </div>
-                <div class=\"profileCont\">
-                    <a href=\"mainPage.php?id=$row[userId]\"><h3>$row[name]</h3></a>
-                    <p>$row[bio]</p>
-                </div>
-            </div>";
-        }
-        if (!$haveMatch){
-            echo "
-            <div class=\"card\">
-                <p>No Match Found</p>
+    $haveMatch = false;
+    while($row = $getUser->fetch()){
+        $haveMatch = true;
+        echo "
+        <div class=\"card profile\">
+            <div class=\"profilePic\">
+                <a href=\"mainPage.php?id=$row[userId]\">
+                    <img  src=\"data:image/png;base64,".base64_encode($row["profilePic"])."\"/>
+                </a>
+                    </div>
+            <div class=\"profileCont\">
+                <a href=\"mainPage.php?id=$row[userId]\"><h3>$row[name]</h3></a>
+                <p>$row[bio]</p>
             </div>
-            ";
-        }
+        </div>";
+    }
+    if (!$haveMatch){
+        echo "
+        <div class=\"card\">
+            <p>No Match Found</p>
+        </div>
+        ";
+    }
 
-        echo "</div>";
-    ?>
+    echo "</div>";
+?>
 </body>
 </html>

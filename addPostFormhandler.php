@@ -9,47 +9,29 @@
 </head>
 <body>
     <?php
+        require("connectSever.php");
 
-        $servername = "localhost";
-        $username = "root";
-        $password = "Joanna24*";
-        $databaseName = "photosharingapp";
+        session_start([
+            "name"=>"userLogin"
+        ]);
+        
 
-        try {
-            $conn = new PDO("mysql:host=$servername;dbname=$databaseName", $username, $password);
-            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            echo "
-            <div class=\"cards\">
-                <div class=\"card\">
-                    Connected Successfully
-                </div>
-            ";
+        $des = addslashes($_POST["des"]);
+        $picture = (file_get_contents($_FILES["picture"]['tmp_name']));
 
-            session_start([
-                "name"=>"userLogin"
-            ]);
-            
+        $stmt = $conn->prepare("INSERT INTO `post` (`userId`, `picture`, `content`) VALUES (:userId, :picture, :content)");
+        $stmt->bindParam(':userId', $_SESSION["id"]);
+        $stmt->bindParam(':picture', $picture);
+        $stmt->bindParam(':content', $des);
 
-            $des = addslashes($_POST["des"]);
-            $picture = (file_get_contents($_FILES["picture"]['tmp_name']));
+        $stmt-> execute();
 
-            $stmt = $conn->prepare("INSERT INTO `post` (`userId`, `picture`, `content`) VALUES (:userId, :picture, :content)");
-            $stmt->bindParam(':userId', $_SESSION["id"]);
-            $stmt->bindParam(':picture', $picture);
-            $stmt->bindParam(':content', $des);
-    
-            $stmt-> execute();
+        session_start([
+            "name" => "userLogin",
+        ]);
 
-            session_start([
-                "name" => "userLogin",
-            ]);
-    
-            $id = $_SESSION["id"];
-            header("Location: mainPage.php?id=$id");
-
-        }catch(PDOException $e) {
-            echo "Connection failed: " . $e->getMessage();
-        }
+        $id = $_SESSION["id"];
+        header("Location: mainPage.php?id=$id");
     ?>
 </body>
 </html>

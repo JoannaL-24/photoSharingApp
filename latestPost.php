@@ -42,73 +42,43 @@
 <body onload="loading()">
     <div class="cards fromButtom">
         <?php
-            $servername = "localhost";
-            $username = "root";
-            $password = "Joanna24*";
-            $databaseName = "photosharingapp";
-    
-            try {
-                $conn = new PDO("mysql:host=$servername;dbname=$databaseName", $username, $password);
-                $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                // echo "<div class=\"card\">
-                //         Connected Successfully
-                //     </div>";
+            require("connectSever.php");
 
-                $stmt = $conn->prepare("SELECT * FROM `following` WHERE follower = ?");
-                $stmt -> bindParam(1, $id);
-                $stmt->execute();
-    
-                $following = array();
-                while($row = $stmt->fetch()){
-                    array_push($following, $row["followingUser"]);
-                }
-                if (!empty($following)){
-                    $getUser = $conn-> prepare("SELECT `user`.`userId`, `user`.`name`, `user`.`profilePic`, `post`.`picture`, `post`.`postId`,`post`.`content`, `post`.`postTime` FROM `post`
-                    INNER JOIN `user` ON `post`.`userId`=`user`.`userId` WHERE `post`.`userId` IN (".implode(',', $following). ") ORDER BY `post`.`postTime` DESC");
-                    $getUser->execute();
-                    while($row = $getUser->fetch()){
-                        echo "
-                        <div class=\"card\">
-                            <div class=\"smallProfile\">
-                                <a class=\"smallImg\" href=\"mainPage.php?id=$row[userId]\">
-                                    <img  src=\"data:image/png;base64,".base64_encode($row["profilePic"])."\"/>
-                                </a>
-                                <a class=\"smallName\" href=\"mainPage.php?id=$row[userId]\"><h4>$row[name]</h4></a>
-                            </div>
-                            <div class=\"postContent\">
-                                <img class=\"postImg\" src=\"data:image/png;base64,".base64_encode(($row["picture"]))."\"/>
-                                <p>$row[content]</p>
-                                <p>$row[postTime]</p>
-                            </div>";
-                        require("checkLike.php");
-                        if ($hasLike){
-                            echo"
-                            <div class=\"postControl\">
-                                <a class=\"circleButton\" href = \"likePost.php?post=$row[postId]&have=$hasLike&list=.1\">
-                                    <i class=\"fa-solid fa-heart xl\"></i>
-                                </a>
-                            </div>";
-                        }
-                        else{
-                            echo"
-                            <div class=\"postControl\">
-                                <a class=\"circleButton\" href = \"likePost.php?post=$row[postId]&have=$hasLike&list=.1\">
-                                    <i class=\"fa-regular fa-heart xl\"></i>
-                                </a>
-                            </div>";
-                        }
-                        echo "</div>";
-                    }
-                }
-                else{
+            $stmt = $conn->prepare("SELECT * FROM `following` WHERE follower = ?");
+            $stmt -> bindParam(1, $id);
+            $stmt->execute();
+
+            $following = array();
+            while($row = $stmt->fetch()){
+                array_push($following, $row["followingUser"]);
+            }
+            
+            if (!empty($following)){
+                $getUser = $conn-> prepare("SELECT `user`.`userId`, `user`.`name`, `user`.`profilePic`, `post`.`picture`, `post`.`postId`,`post`.`content`, `post`.`postTime` FROM `post`
+                INNER JOIN `user` ON `post`.`userId`=`user`.`userId` WHERE `post`.`userId` IN (".implode(',', $following). ") ORDER BY `post`.`postTime` DESC");
+                $getUser->execute();
+                while($row = $getUser->fetch()){
                     echo "
                     <div class=\"card\">
-                        There no post:C
+                        <div class=\"smallProfile\">
+                            <a class=\"smallImg\" href=\"mainPage.php?id=$row[userId]\">
+                                <img  src=\"data:image/png;base64,".base64_encode($row["profilePic"])."\"/>
+                            </a>
+                            <a class=\"smallName\" href=\"mainPage.php?id=$row[userId]\"><h4>$row[name]</h4></a>
+                        </div>";
+                        $isList = .1;
+                        require("postContent.php");
+                    echo "
                     </div>";
                 }
-            }catch(PDOException $e) {
-                echo "Connection failed: " . $e->getMessage();
             }
+            else{
+                echo "
+                <div class=\"card\">
+                    There no post:C
+                </div>";
+            }
+            echo "</div>";
         ?>
     </div>
 </body>

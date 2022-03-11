@@ -8,53 +8,37 @@
     $hasFollow = $_GET["have"];
     $viewId = $_GET["id"];
 
-    $servername = "localhost";
-    $username = "root";
-    $password = "Joanna24*";
-    $databaseName = "photosharingapp";
+    require("connectSever.php");
+    if ($isList==2){
+        $stmt = $conn->prepare("DELETE FROM `following` WHERE `follower` = ? AND `followingUser` = ?");
+        $stmt->bindParam(1, $viewId);
+        $stmt->bindParam(2, $_SESSION["id"]);
 
-    try {
-        $conn = new PDO("mysql:host=$servername;dbname=$databaseName", $username, $password);
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        echo "
-        <div class=\"cards\">
-            <div class=\"card\">
-                Connected Successfully
-            </div>
-        ";
-        if ($isList==2){
+        $stmt-> execute();
+    }
+    else{
+        if ($hasFollow){
             $stmt = $conn->prepare("DELETE FROM `following` WHERE `follower` = ? AND `followingUser` = ?");
-            $stmt->bindParam(1, $viewId);
-            $stmt->bindParam(2, $_SESSION["id"]);
+            $stmt->bindParam(1, $_SESSION["id"]);
+            $stmt->bindParam(2, $viewId);
     
             $stmt-> execute();
         }
         else{
-            if ($hasFollow){
-                $stmt = $conn->prepare("DELETE FROM `following` WHERE `follower` = ? AND `followingUser` = ?");
-                $stmt->bindParam(1, $_SESSION["id"]);
-                $stmt->bindParam(2, $viewId);
-        
-                $stmt-> execute();
-            }
-            else{
-                $stmt = $conn->prepare("INSERT INTO `following` (`follower`, `followingUser`) VALUES (:follower, :followingUser)");
-                $stmt->bindParam(':follower', $_SESSION["id"]);
-                $stmt->bindParam(':followingUser', $viewId);
-        
-                $stmt-> execute();
-            }
+            $stmt = $conn->prepare("INSERT INTO `following` (`follower`, `followingUser`) VALUES (:follower, :followingUser)");
+            $stmt->bindParam(':follower', $_SESSION["id"]);
+            $stmt->bindParam(':followingUser', $viewId);
+    
+            $stmt-> execute();
         }
-        
-        if ($isList == 0){
-            header( "Location: mainPage.php?id=$viewId" );
-        }
-        else{
-            header( "Location: following.php" );
-        }
-        
-        echo "</div>";
-    }catch(PDOException $e) {
-        echo "Connection failed: " . $e->getMessage();
     }
+    
+    if ($isList == 0){
+        header( "Location: mainPage.php?id=$viewId" );
+    }
+    else{
+        header( "Location: following.php" );
+    }
+        
+    echo "</div>";
 ?>

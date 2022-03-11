@@ -60,114 +60,75 @@
     <?php   
         echo "<div class=\"cards fromButtom\">";
 
-        $servername = "localhost";
-        $username = "root";
-        $password = "Joanna24*";
-        $databaseName = "photosharingapp";
+        require("connectSever.php");
 
-        try {
-            $conn = new PDO("mysql:host=$servername;dbname=$databaseName", $username, $password);
-            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            /*echo "
-                <div class=\"card\">
-                    Connected Successfully
-                </div>
-            ";*/
-
-            if ($viewId == $id){
-                // echo "<div class=\"card\" style=\"height:100px;\">self</div>";
-                $name = $_SESSION["name"];
-                $email = $_SESSION["email"];    
-                $bio = $_SESSION["bio"];
-                $profilePic = $_SESSION["profilePic"];
-                echo "
-                
-                    <div class=\"card\">
-                        <div class=\"more\" style=\"justify-content: flex-end\">
-                            <div id=\"profileDetail\" class=\"card\">
-                                <a class=\"detailLink\" href=\"likeList.php\">Liked Posts</a>
-                                <a class=\"detailLink\" href=\"changeProfile.php\">Change Profile</a>
-                            </div>
-                            <a id=\"profileMore\" class=\"circleButton\" onclick=\"profileMore()\">
-                                <i class=\"fa-solid fa-ellipsis-vertical\"></i>
-                            </a>
-                        </div>
-                        <p>ID: $id</p>
-                        <p>Name: $name</p>
-                        <p>Email: $email</p>
-                        <p>Bio: $bio</p>
-                        <p>Profile Picture: </p>
-                        <img  src=\"data:image/png;base64,$profilePic\"/>
-                        <br>
-                        
-                    </div>";
-            }
-            else{
-                // echo "<div class=\"card\" style=\"height:100px;\">else</div>";
-                require_once("checkFollow.php");
-
-                $getUser = $conn-> prepare("SELECT `name`, `bio`, `profilePic` FROM `user` WHERE userId = ?");
-                $getUser->bindParam(1, $viewId);
-                $getUser->execute();
-                while($row = $getUser->fetch()){
-                    echo "
-                    <div class=\"card\">
-                        <p>Name: $row[name]</p>
-                        <p>Bio: $row[bio]</p>
-                        <p>Profile Picture: </p>
-                        <img  src=\"data:image/png;base64,".base64_encode($row["profilePic"])."\"/>";
-                    require("checkFollow.php");
-                    if (!$hasFollow){
-                        echo "<form method=\"POST\" action=\"followFormhandler.php?list=0&have=$hasFollow&id=$viewId\">
-                            <input type=\"submit\" value=\"Follow\" id=\"followBtn\">
-                        </form>
-                    </div>";
-                    }
-                    else{
-                        echo "<form method=\"POST\" action=\"followFormhandler.php?list=0&have=$hasFollow&id=$viewId\">
-                            <input type=\"submit\" value=\"Unfollow\" id=\"followBtn\">
-                        </form>
-                    </div>";
-                    }
-                        
-                }
-            }
-
-
-            $getPost = $conn-> prepare("SELECT `postId`,`picture`,`content`,`postTime` FROM `post` WHERE `userId` = ?");
-            $getPost->bindParam(1, $viewId);
-            $getPost->execute();
-
-            while($row = $getPost->fetch()){
-                
-                echo "
-                <div class=\"card\">
-                    <img class=\"postImg\" src=\"data:image/png;base64,".base64_encode(($row["picture"]))."\"/>
-                    <p>$row[content]</p>
-                    <p>$row[postTime]</p>";
-                    require("checkLike.php");
-                    if ($hasLike){
-                        echo"
-                        <div class=\"postControl\">
-                            <a class=\"circleButton\" href = \"likePost.php?post=$row[postId]&have=$hasLike&list=$viewId\">
-                                <i class=\"fa-solid fa-heart xl\"></i>
-                            </a>
-                        </div>";
-                    }
-                    else{
-                        echo"
-                        <div class=\"postControl\">
-                            <a class=\"circleButton\" href = \"likePost.php?post=$row[postId]&have=$hasLike&list=$viewId\">
-                                <i class=\"fa-regular fa-heart xl\"></i>
-                            </a>
-                        </div>";
-                    }
-                echo "
-                </div>";
-            }
+        if ($viewId == $id){
+            $name = $_SESSION["name"];
+            $email = $_SESSION["email"];    
+            $bio = $_SESSION["bio"];
+            $profilePic = $_SESSION["profilePic"];
+            echo "
             
-        }catch(PDOException $e) {
-            echo "Connection failed: " . $e->getMessage();
+                <div class=\"card\">
+                    <div class=\"more\" style=\"justify-content: flex-end\">
+                        <div id=\"profileDetail\" class=\"card\">
+                            <a class=\"detailLink\" href=\"likeList.php\">Liked Posts</a>
+                            <a class=\"detailLink\" href=\"changeProfile.php\">Change Profile</a>
+                        </div>
+                        <a id=\"profileMore\" class=\"circleButton\" onclick=\"profileMore()\">
+                            <i class=\"fa-solid fa-ellipsis-vertical\"></i>
+                        </a>
+                    </div>
+                    <p>ID: $id</p>
+                    <p>Name: $name</p>
+                    <p>Email: $email</p>
+                    <p>Bio: ".stripslashes($bio)."</p>
+                    <p>Profile Picture: </p>
+                    <img  src=\"data:image/png;base64,$profilePic\"/>
+                    <br>
+                    
+                </div>";
+        }
+        else{
+            require_once("checkFollow.php");
+
+            $getUser = $conn-> prepare("SELECT `name`, `bio`, `profilePic` FROM `user` WHERE userId = ?");
+            $getUser->bindParam(1, $viewId);
+            $getUser->execute();
+            while($row = $getUser->fetch()){
+                echo "
+                <div class=\"card\">
+                    <p>Name: $row[name]</p>
+                    <p>Bio: $row[bio]</p>
+                    <p>Profile Picture: </p>
+                    <img  src=\"data:image/png;base64,".base64_encode($row["profilePic"])."\"/>";
+                require("checkFollow.php");
+                if (!$hasFollow){
+                    echo "<form method=\"POST\" action=\"followFormhandler.php?list=0&have=$hasFollow&id=$viewId\">
+                        <input type=\"submit\" value=\"Follow\" id=\"followBtn\">
+                    </form>
+                </div>";
+                }
+                else{
+                    echo "<form method=\"POST\" action=\"followFormhandler.php?list=0&have=$hasFollow&id=$viewId\">
+                        <input type=\"submit\" value=\"Unfollow\" id=\"followBtn\">
+                    </form>
+                </div>";
+                }
+                    
+            }
+        }
+
+
+        $getPost = $conn-> prepare("SELECT `postId`,`picture`,`content`,`postTime` FROM `post` WHERE `userId` = ?");
+        $getPost->bindParam(1, $viewId);
+        $getPost->execute();
+
+        while($row = $getPost->fetch()){
+            $isList = $viewId;
+            echo "<div class=\"card\">";
+            include("postContent.php");
+            echo "</div>";
         }
         echo "</div>";
 
