@@ -79,14 +79,13 @@
                             <i class=\"fa-solid fa-ellipsis-vertical\"></i>
                         </a>
                     </div>
+                    <br>
+                    <img  src=\"data:image/png;base64,$profilePic\"/>
+                    <br><br>
                     <p>ID: $id</p>
                     <p>Name: $name</p>
                     <p>Email: $email</p>
-                    <p>Bio: ".stripslashes($bio)."</p>
-                    <p>Profile Picture: </p>
-                    <img  src=\"data:image/png;base64,$profilePic\"/>
-                    <br>
-                    
+                    <p>Bio: ".stripslashes($bio)."</p>                    
                 </div>";
         }
         else{
@@ -127,7 +126,7 @@
         while($row = $getPost->fetch()){
             $isList = $viewId;
             echo "<div class=\"card\">";
-            include("postContent.php");
+            require("postContent.php");
             echo "</div>";
         }
         echo "</div>";

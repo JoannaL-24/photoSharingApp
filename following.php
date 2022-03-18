@@ -65,17 +65,8 @@
         $getUser = $conn-> prepare("SELECT `userId`,`name`, `bio`, `profilePic` FROM `user` WHERE `userId` IN (".implode(',', $following). ")");
         $getUser->execute();
         while($row = $getUser->fetch()){
+            require("otherProfile.php");
             echo "
-            <div class=\"card profile\">
-                <div class=\"profilePic\">
-                    <a href=\"mainPage.php?id=$row[userId]\">
-                        <img  src=\"data:image/png;base64,".base64_encode($row["profilePic"])."\"/>
-                    </a>
-                        </div>
-                <div class=\"profileCont\">
-                    <a href=\"mainPage.php?id=$row[userId]\"><h3>$row[name]</h3></a>
-                    <p>$row[bio]</p>
-                </div>
                 <form method=\"POST\" action=\"followFormhandler.php?list=",1,"&have=".true."&id=$row[userId]\">
                         <input type=\"submit\" value=\"Unfollow\" id=\"followBtn\">
                 </form>
@@ -100,17 +91,8 @@
 
         while($row = $getUser->fetch()){
             $viewId = $row["userId"];
+            require("otherProfile.php");
             echo "
-            <div class=\"card profile\">
-                <div class=\"profilePic\">
-                    <a href=\"mainPage.php?id=$viewId\">
-                        <img  src=\"data:image/png;base64,".base64_encode($row["profilePic"])."\"/>
-                    </a>
-                        </div>
-                <div class=\"profileCont\">
-                    <a href=\"mainPage.php?id=$viewId\"><h3>$row[name]</h3></a>
-                    <p>$row[bio]</p>
-                </div>
                 <form method=\"POST\" action=\"followFormhandler.php?list=2&have=". false."&id=$row[userId]\">
                     <input type=\"submit\" value=\"Remove\" id=\"followBtn\">
                 </form>

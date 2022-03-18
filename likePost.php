@@ -24,14 +24,18 @@
         $stmt-> execute();
         
     }
-    if ($isList == .1){
-        header( "Location: latestPost.php" );
+
+    if (isset($_GET["single"])){
+        header( "Location: singlePost.php?post=$postId&have=$hasLike&list=$isList" );
+    }
+    else if ($isList == .1){
+        header( "Location: latestPost.php#$postId" );
     }
     else if ($isList == .2){
         header( "Location: likeList.php" );
     }
     else{
-        header( "Location: mainPage.php?id=$isList" );
+        header( "Location: mainPage.php?id=$isList#$postId" );
     }
     
     echo "</div>";
