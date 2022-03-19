@@ -126,6 +126,7 @@
         while($row = $getPost->fetch()){
             $isList = $viewId;
             echo "<div class=\"card\">";
+            $single = false;
             require("postContent.php");
             echo "</div>";
         }

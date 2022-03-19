@@ -42,6 +42,10 @@
 <body onload="loading()">
     <div class="cards fromButtom">
         <?php
+            echo "
+                <a id=\"back\" class=\"circleButton\" href=\"mainPage.php?id=$id\">
+                    <i style=\"color: white;\" class=\"fa-solid fa-arrow-left\"></i>
+                </a>";
             require("connectSever.php");
             $stmt = $conn->prepare("SELECT * FROM `like` WHERE userId = ?");
             $stmt -> bindParam(1, $_SESSION["id"]);
@@ -67,6 +71,7 @@
                                 <a class=\"smallName\" href=\"mainPage.php?id=$row[userId]\"><h4>$row[name]</h4></a>
                             </div>";
                         $isList = .2;
+                        $single = false;
                         require("postContent.php");
                         echo "</div>";
                 }

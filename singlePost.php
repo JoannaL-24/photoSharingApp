@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="style.css" rel="stylesheet">
     <script src="https://kit.fontawesome.com/78ed85043c.js" crossorigin="anonymous"></script>
-    <title>Document</title>
+    <title>Single Post</title>
 </head>
 <?php
     session_start([
@@ -26,6 +26,7 @@
     <a class="cta" href="logOut.php"><h4>Logout</h4></a>
 </header>
 <body>
+
 <?php
     $isList = $_GET["list"];
     $postId = $_GET["post"];
@@ -46,7 +47,6 @@
     else{
         $location = "mainPage.php?id=$isList#$postId";
     }
-    echo $location;
 
     require("connectSever.php");
     echo "<div class=\"cards\">";
@@ -67,31 +67,13 @@
                 </a>
                 <a class=\"smallName\" href=\"mainPage.php?id=$row[userId]\"><h4>$row[name]</h4></a>
             </div>";
-        echo"
-            <div class=\"postContent\" id=$row[postId]>
-                <img class=\"postImg\" src=\"data:image/png;base64,".base64_encode(($row["picture"]))."\"/>
-                <p>$row[content]</p>
-                <br>
-                <p class=\"timestamp\">$row[postTime]</p>
-            </div>";
-            echo"
-            <div class=\"postControl\">";
-            require("checkLike.php");
-            if ($hasLike){
-                echo"
-                    <a class=\"circleButton\" href = \"likePost.php?post=$row[postId]&have=$hasLike&list=$isList&single=true\">
-                        <i class=\"fa-solid fa-heart xl\"></i>
-                    </a>";
-            }
-            else{
-                echo"
-                    <a class=\"circleButton\" href = \"likePost.php?post=$row[postId]&have=$hasLike&list=$isList&single=true\">
-                        <i class=\"fa-regular fa-heart xl\"></i>
-                    </a>";
-            }
-            echo "
-            </div>";
-
+            $single = true;
+            require("postContent.php");
+?>
+            <script>
+                document.getElementById("commentCount").style.display = "none";
+            </script>
+<?php
             if(isset($_POST["addComment$row[postId]"])){
                 $getComment = $conn->prepare("INSERT INTO `comment` (`postId`, `userId`, `content`) VALUES (:postId, :userId, :content)");
                 $getComment->bindParam(':postId', $row["postId"]);
@@ -113,7 +95,6 @@
         
                 $updateComment-> execute();
             }
-            
             
             $getComment = $conn->prepare("SELECT `user`.`userId`, `user`.`name`, `user`.`profilePic`, `comment`.`commentId`, `comment`.`content`, `comment`.`commentTime` FROM `comment`
                                         INNER JOIN `user` ON `comment`.`userId`=`user`.`userId` WHERE `comment`.`postId` = ? ORDER BY `comment`.`commentTime` DESC");
@@ -160,17 +141,17 @@
             }
             if($showEdit){
                 echo "
-                <form action=\"singlePost.php?post=$row[postId]&have=$hasLike&list=$isList\" method=\"POST\">
+                <form action=\"singlePost.php?post=$row[postId]&have=$hasLike&list=$isList\" method=\"POST\" autocomplete=\"off\">
                     <input type=\"hidden\" name=\"commentId\" value=$_POST[commentId]>
-                    <input type=\"text\" name=\"newComment\">
-                    <input type=\"submit\" name=\"updateComment$row[postId]\" value=\"Edit\">
+                    <input type=\"text\" name=\"newComment\" id=\"newComment\" placeholder=\"New Comment\">
+                    <input type=\"submit\" style=\"margin-top:10px;\"name=\"updateComment$row[postId]\" value=\"Edit\">
                 </form>";
             }
             else{
                 echo "
-                <form action=\"singlePost.php?post=$row[postId]&have=$hasLike&list=$isList\" method=\"POST\">
-                    <input type=\"text\" name=\"newComment\">
-                    <input type=\"submit\" name=\"addComment$row[postId]\" value=\"Add\">
+                <form action=\"singlePost.php?post=$row[postId]&have=$hasLike&list=$isList\" method=\"POST\" autocomplete=\"off\">
+                    <input type=\"text\" name=\"newComment\" id=\"newComment\" placeholder=\"New Comment\">
+                    <input type=\"submit\" style=\"margin-top:10px;\" name=\"addComment$row[postId]\" value=\"Add\">
                 </form>";
             }
             echo"
@@ -180,5 +161,6 @@
     }
     
 ?>
+
 </body>
 </html>

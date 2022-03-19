@@ -25,7 +25,7 @@
         
     }
 
-    if (isset($_GET["single"])){
+    if (($_GET["single"])){
         header( "Location: singlePost.php?post=$postId&have=$hasLike&list=$isList" );
     }
     else if ($isList == .1){

@@ -17,7 +17,9 @@
         echo "
         <div class=\"cards\">
             <div class=\"card\">
-                Log Out Successfully<br>
+                Log Out Successfully
+                <br>
+                <br>
                 <a href=\"signUp.php\">Sign Up</a><br>
                 <br>
                 <a href=\"logIn.php\">Log In</a><br>

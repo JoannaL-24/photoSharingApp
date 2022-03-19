@@ -67,6 +67,7 @@
                             <a class=\"smallName\" href=\"mainPage.php?id=$row[userId]\"><h4>$row[name]</h4></a>
                         </div>";
                         $isList = .1;
+                        $single = false;
                         require("postContent.php");
                     echo "
                     </div>";
