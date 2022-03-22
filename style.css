@@ -350,7 +350,7 @@ i{
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
-  .cards {
+  /* .cards {
     position: relative;
     -webkit-animation: fromButtom 0.9s;
     animation: fromButtom 0.9s;
@@ -364,7 +364,7 @@ i{
   @keyframes fromButtom { 
     from{ bottom:-20px; opacity:0 } 
     to{ bottom:0; opacity:1 }
-  }
+  } */
 
   .modal {
     position: fixed;
