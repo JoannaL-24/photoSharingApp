@@ -10,7 +10,7 @@
 <header>
     <nav>
         <ul class="naviLink">
-            <li class = "active"><a  href="index.html"><h4>Welcome</h4></a></li>
+            <li class = "active"><a  href="index.php"><h4>Welcome</h4></a></li>
             <li><a href="signUp.php"><h4>Sign Up</h4></a></li>
             <li><a href="logIn.php"><h4>Login</h4></a></li>
         </ul>

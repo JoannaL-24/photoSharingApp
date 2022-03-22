@@ -51,7 +51,7 @@
         echo "<div class=\"card\">
                 Fail to Log In: username or password is incorrect<br>
                 <a href=\"logIn.php\">Try Again</a><br>
-                <a href=\"index.php\">Sign Up</a><br>
+                <a href=\"signUp.php\">Sign Up</a><br>
                 </div>";
     }
     echo "</div>";
