@@ -1,3 +1,4 @@
+<!-- log out page -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,6 +14,7 @@
             "name" => "userLogin",
         ]);
 
+        // log user out by destroying the session
         session_destroy();
         echo "
         <div class=\"cards\">

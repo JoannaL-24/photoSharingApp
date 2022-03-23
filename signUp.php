@@ -1,3 +1,4 @@
+<!-- the sign up form -->
 <!DOCTYPE html>
 <html lang="en">
 <head>

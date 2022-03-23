@@ -1,6 +1,6 @@
+<!-- process the log in form input -->
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,14 +8,15 @@
     <link href="style.css" rel="stylesheet">
     <title>Fail to Log In</title>
 </head>
-
 <body>
 <?php
     require("connectSever.php");
 
+    // get the sign up form inputs and pre-process them
     $searchEmail = addslashes($_POST["email"]);
     $searchPass = $_POST["passW"];
 
+    // get the user with the inputed email
     $stmt = $conn->prepare("SELECT * FROM `user` WHERE `email` LIKE ?");
     $stmt->bindParam(1, $searchEmail);
     $stmt->execute();
@@ -25,8 +26,8 @@
     $matchBio = "";
     $matchProfile = "";
     while ($row = $stmt->fetch()) {
-        //var_dump($row);
         $matchPass = $row["password"];
+        // the password match record the user info
         if (password_verify($searchPass, $matchPass)) {
             $matchId = $row["userId"];
             $matchName = $row["name"];
@@ -34,9 +35,11 @@
             $matchProfile = $row['profilePic'];
         }
     }
+    // if there is a match user
     if (strcmp($matchName, "") != 0) {
         echo "Log In Successfully<br>";
 
+        // create a session
         session_start([
             "name" => "userLogin",
         ]);
@@ -47,7 +50,9 @@
         $_SESSION["profilePic"] = base64_encode($matchProfile);
 
         header("Location: mainPage.php?id=$_SESSION[id]");
-    } else {
+    } 
+    // if not: display error msg
+    else {
         echo "<div class=\"card\">
                 Fail to Log In: username or password is incorrect<br>
                 <a href=\"logIn.php\">Try Again</a><br>

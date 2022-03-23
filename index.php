@@ -1,3 +1,5 @@
+<!-- Title Index Page: introduce the platform -->
+<!-- ALL header tags are navigation bar -->
 <!DOCTYPE html>
 <html lang="en">
 <head>

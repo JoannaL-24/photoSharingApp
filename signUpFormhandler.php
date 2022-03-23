@@ -1,3 +1,4 @@
+<!-- create a user in database -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,17 +9,21 @@
     <title>Document</title>
 </head>
 <body>
-<?php  
+<?php
     require("connectSever.php");
 
+    // add slashes to the form inputs
     $name = addslashes($_POST["name"]);
     $email = addslashes($_POST["email"]);
     $passW = addslashes($_POST["passW"]);
     $bio = addslashes($_POST["bio"]);
+
+    // get the raw pic code from the input tmp_name
     $profilePic = file_get_contents($_FILES["profilePic"]['tmp_name']);
-    
+    // hash the password
     $passW = password_hash($passW, PASSWORD_BCRYPT);
 
+    // check if the email is used
     $checkSql = $conn->prepare("SELECT `email` FROM `user`");
     $checkSql->execute();
 
@@ -36,6 +41,7 @@
         </div>";
     }
     else{
+        // if there is no account with the email, create new account
         $stmt = $conn->prepare("INSERT INTO `user` (`name`, `email`, `password`, `bio`, `profilePic`) VALUES (:name, :email, :passW, :bio, :profilePic)");
         $stmt->bindParam(':name', $name);
         $stmt->bindParam(':email', $email);
@@ -45,11 +51,13 @@
 
         $stmt-> execute();
 
+        // get the user info to store in session
         $getPic = $conn-> prepare("SELECT `userId`,`profilePic` FROM `user` WHERE `email`like?");
         $getPic->bindParam(1, $email);
         $getPic->execute();
         $row = $getPic->fetch(PDO::FETCH_ASSOC);
 
+        // create session
         session_start([
             "name" => "userLogin",
         ]);
@@ -60,6 +68,7 @@
         $_SESSION["bio"] = $bio;
         $_SESSION["profilePic"] = base64_encode($row['profilePic']);
 
+        // redirect
         header( "Location: mainPage.php?id=$_SESSION[id]" );
     }
     echo "</div>";
