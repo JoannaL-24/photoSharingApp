@@ -19,7 +19,7 @@
     $bio = addslashes($_POST["bio"]);
 
     // get the raw pic code from the input tmp_name
-    if (isset($_FILES["profilePic"]['tmp_name']))
+    if (!empty($_FILES["profilePic"]['tmp_name']))
         $profilePic = file_get_contents($_FILES["profilePic"]['tmp_name']);
     else 
         $profilePic = "";

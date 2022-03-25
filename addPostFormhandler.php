@@ -18,7 +18,7 @@
 
         $des = addslashes($_POST["des"]);
         $picture = "";
-        if (isset($_FILES["picture"]['tmp_name'])){
+        if (!empty($_FILES["picture"]['tmp_name'])){
             $picture = (file_get_contents($_FILES["picture"]['tmp_name']));
         }
         
