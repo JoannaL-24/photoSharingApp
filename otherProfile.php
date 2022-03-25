@@ -1,3 +1,5 @@
+<!-- [for require] -->
+<!-- the general template for small profile that only show the user profile pic and name -->
 <?php
     echo "
     <div class=\"card profile\">

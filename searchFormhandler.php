@@ -1,3 +1,4 @@
+<!-- search based on the "search.php" inputs in database -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,14 +31,17 @@
 
     require("connectSever.php");
     
+    // pre-process the input
     $searchName = addslashes("%$_POST[searchName]%");
 
+    // search query
     $getUser = $conn-> prepare("SELECT `userId`,`name`, `bio`, `profilePic` FROM `user` WHERE `name` like ?");
     $getUser->bindParam(1, $searchName);
     $getUser->execute();
 
     $haveMatch = false;
     while($row = $getUser->fetch()){
+        // if there is a match: print the user info
         $haveMatch = true;
         echo "
         <div class=\"card profile\">
@@ -52,6 +56,7 @@
             </div>
         </div>";
     }
+    // if there's no match: inform that
     if (!$haveMatch){
         echo "
         <div class=\"card\">

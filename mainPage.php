@@ -1,4 +1,5 @@
-
+<!-- the main page for user: can display both the logged in user's 
+    and other users' profile and their posts  -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,6 +11,7 @@
     <title>Home</title>
 </head>
 <?php
+    // get the $id for mainpage navigation link
     $viewId = $_GET["id"];
     session_start([
         "name" => "userLogin",
@@ -27,6 +29,7 @@
     <a class="cta" id="addPost" href="addPost.php"><h4>+</h4></a>
     <a class="cta" href="logOut.php"><h4>Logout</h4></a>
 </header>
+<!-- to be update: script comments -->
 <script>
     function loading() {
         if (document.readyState != "complete") {
@@ -43,13 +46,10 @@
     function profileMore(){
         if (!showProfileDetail){
             document.getElementById("profileDetail").classList.add("popup");
-            // document.getElementById("profileDetail").style.visibility = "visible";
             showProfileDetail = true;
         }
         else{
-            
             document.getElementById("profileDetail").classList.remove("popup");
-            // document.getElementById("profileDetail").style.visibility = "hidden";
             showProfileDetail = false;
         }
         
@@ -61,8 +61,10 @@
         echo "<div class=\"cards fromButtom\">";
 
         require("connectSever.php");
-
+        
+        // if the profile to diaplay is the logged in user
         if ($viewId == $id){
+            // load and print user info from the logged in session
             $name = $_SESSION["name"];
             $email = $_SESSION["email"];    
             $bio = $_SESSION["bio"];
@@ -88,9 +90,11 @@
                     <p>Bio: ".stripslashes($bio)."</p>                    
                 </div>";
         }
-        else{
-            require_once("checkFollow.php");
-
+        // if the profile to display is other user
+        else
+        {
+            // load the view target user (a user other than the logged in one) from the database
+            // and print the view target user's info
             $getUser = $conn-> prepare("SELECT `name`, `bio`, `profilePic` FROM `user` WHERE userId = ?");
             $getUser->bindParam(1, $viewId);
             $getUser->execute();
@@ -101,7 +105,10 @@
                     <p>Bio: $row[bio]</p>
                     <p>Profile Picture: </p>
                     <img  src=\"data:image/png;base64,".base64_encode($row["profilePic"])."\"/>";
+                
+                // check if the logged in user follow the view target user 
                 require("checkFollow.php");
+                // display different icons for following status
                 if (!$hasFollow){
                     echo "<form method=\"POST\" action=\"followFormhandler.php?list=0&have=$hasFollow&id=$viewId\">
                         <input type=\"submit\" value=\"Follow\" id=\"followBtn\">
@@ -118,7 +125,7 @@
             }
         }
 
-
+        // get all posts from the displayed user (doesn't matter if it is a logged in user or a view target)
         $getPost = $conn-> prepare("SELECT `postId`,`picture`,`content`,`postTime` FROM `post` WHERE `userId` = ?");
         $getPost->bindParam(1, $viewId);
         $getPost->execute();

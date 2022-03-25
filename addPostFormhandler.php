@@ -17,7 +17,11 @@
         
 
         $des = addslashes($_POST["des"]);
-        $picture = (file_get_contents($_FILES["picture"]['tmp_name']));
+        $picture = "";
+        if (isset($_FILES["picture"]['tmp_name'])){
+            $picture = (file_get_contents($_FILES["picture"]['tmp_name']));
+        }
+        
 
         $stmt = $conn->prepare("INSERT INTO `post` (`userId`, `picture`, `content`) VALUES (:userId, :picture, :content)");
         $stmt->bindParam(':userId', $_SESSION["id"]);

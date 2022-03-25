@@ -1,3 +1,4 @@
+<!-- search form for search inputs -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
